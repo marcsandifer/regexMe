@@ -1,14 +1,11 @@
 # to-do: add CSV functionality
-# to-do: split file name during creation of new file
 
 import re
 
 
 def filename_prompt():
-    filename = input("Please enter the name of your file: ")
-    split_filename, split_extension = filename.split(".")
-    print(split_filename, split_extension)
-    return split_filename, split_extension
+    file_name = input("Please enter the name of your file: ")
+    return file_name
 
 
 def regex_prompt():
@@ -36,11 +33,11 @@ def replacement_prompt(regex_counter, regex):
     return replacement
 
 
-def regex_this(split_filename, split_extension, regex, replacement, regex_counter):
-    file_name = split_filename + "." + split_extension
-    new_filename = (split_filename + "_processed." + split_extension)
+def regex_this(file_name, regex, replacement, regex_counter):
     file_handler = open(file_name)
     file_content = file_handler.read()
+    split_filename, split_extension = file_name.split(".")
+    new_filename = (split_filename + "_processed." + split_extension)
     replacements_done = 0
     while regex_counter >= 0:
         print(f"Replacing {regex[replacements_done]} with {replacement[replacements_done]}")
@@ -56,10 +53,10 @@ def regex_this(split_filename, split_extension, regex, replacement, regex_counte
 
 
 def main():
-    split_filename, split_extension = filename_prompt()
+    file_name = filename_prompt()
     regex_counter, regex = regex_prompt()
     replacement = replacement_prompt(regex_counter, regex)
-    regex_this(split_filename, split_extension, regex, replacement, regex_counter)
+    regex_this(file_name, regex, replacement, regex_counter)
 
 
 if __name__ == '__main__':
