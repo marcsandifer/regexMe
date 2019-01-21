@@ -1,6 +1,3 @@
-# to-do: add CSV functionality
-# to-do: read and write line by line
-
 import re
 
 
