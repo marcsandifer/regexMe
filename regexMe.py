@@ -1,3 +1,6 @@
+# to-do: add CSV functionality
+# to-do: split file name during creation of new file
+
 import re
 
 
@@ -36,15 +39,15 @@ def replacement_prompt(regex_counter, regex):
 def regex_this(split_filename, split_extension, regex, replacement, regex_counter):
     file_name = split_filename + "." + split_extension
     new_filename = (split_filename + "_processed." + split_extension)
-    file = open(file_name)
-    file_content = file.read()
+    file_handler = open(file_name)
+    file_content = file_handler.read()
     replacements_done = 0
     while regex_counter >= 0:
         print(f"Replacing {regex[replacements_done]} with {replacement[replacements_done]}")
         file_content_after = re.sub(regex[replacements_done], str(replacement[replacements_done]), file_content)
         regex_counter = regex_counter - 1
         replacements_done = replacements_done + 1
-        file.close()
+        file_handler.close()
         new_file = open(new_filename, "w+")
         new_file.write(file_content_after)
         new_file.close()
