@@ -11,17 +11,15 @@ def filename_prompt():
 
 def regex_prompt():
     regex = []
-    regex_counter = 0
     regex.append(input("Please enter your regular expression: "))
     yes_no = input("Would you like to add another regular expression to apply?")
     while yes_no.lower() not in {"n", "y"}:
         yes_no = input("Please answer with 'n' or 'y': ")
     while yes_no.lower() == "y":
         regex.append(input("Please enter your regular expression: "))
-        regex_counter = regex_counter + 1
         yes_no = input("Would you like to add another regular expression to apply?")
-    print(f"You've entered {regex_counter + 1} regular expression(s).")
-    return regex_counter, regex
+    print(f"You've entered {len(regex)} regular expression(s).")
+    return regex
 
 
 def replacement_prompt(regex):
@@ -31,7 +29,7 @@ def replacement_prompt(regex):
     return replacement
 
 
-def regex_this(file_name, regex, replacement, regex_counter):
+def regex_this(file_name, regex, replacement):
     split_filename, split_extension = file_name.split(".")
     new_filename = (split_filename + "_processed." + split_extension)
     new_file = open(new_filename, "w")
@@ -39,14 +37,12 @@ def regex_this(file_name, regex, replacement, regex_counter):
         line = file_handler.readline()
         while line:
             replacements_done = 0
-            counter = regex_counter
             line_content = line
-            while counter >= 0:
-                print(f"Replaced {regex[replacements_done]} with {replacement[replacements_done]} in line: '{line_content}'")
+            for expression in regex:
+                print(f"Replaced {expression} with {replacement[replacements_done]} in line: '{line_content}'")
                 file_content_after = re.sub(regex[replacements_done], str(replacement[replacements_done]), line_content)
                 line_content = file_content_after
-                counter = counter - 1
-                replacements_done = replacements_done + 1
+                replacements_done = replacements_done + 1   # to-do: figure out how to get rid of this count variable
             new_file.write(file_content_after)
             line = file_handler.readline()
         file_handler.close()
@@ -56,9 +52,9 @@ def regex_this(file_name, regex, replacement, regex_counter):
 
 def main():
     file_name = filename_prompt()
-    regex_counter, regex = regex_prompt()
+    regex = regex_prompt()
     replacement = replacement_prompt(regex)
-    regex_this(file_name, regex, replacement, regex_counter)
+    regex_this(file_name, regex, replacement)
 
 
 if __name__ == '__main__':
