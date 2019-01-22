@@ -2,8 +2,11 @@ import re
 
 
 def filename_prompt():
-    file_name = input("Please enter the name of your file: ")
-    return file_name
+        file_name = ""
+        while "." not in file_name or len(file_name) < 3:                               # to-do: replace with regEx
+            file_name = input("Please enter the name of your file.\n" 
+                              "Files must have an extension and the name must be at least 3 characters long: ")
+        return file_name
 
 
 def regex_prompt():
@@ -21,33 +24,12 @@ def regex_prompt():
     return regex_counter, regex
 
 
-def replacement_prompt(regex_counter, regex):
+def replacement_prompt(regex):
     replacement = []
-    replacement_counter = 0
-    while regex_counter >= 0:
-        replacement.append(input(f"Please enter what you'd like to replace {regex[replacement_counter]} with: "))
-        replacement_counter = replacement_counter + 1
-        regex_counter = regex_counter - 1
+    for expression in regex:
+        replacement.append(input(f"Please enter what you'd like to replace {expression} with: "))
     return replacement
 
-
-# def regex_this(file_name, regex, replacement, regex_counter):
-#    file_handler = open(file_name)
-#    file_content = file_handler.read()
-#    split_filename, split_extension = file_name.split(".")
-#    new_filename = (split_filename + "_processed." + split_extension)
-#    replacements_done = 0
-#    while regex_counter >= 0:
-#        print(f"Replacing {regex[replacements_done]} with {replacement[replacements_done]}")
-#        file_content_after = re.sub(regex[replacements_done], str(replacement[replacements_done]), file_content)
-#        regex_counter = regex_counter - 1
-#        replacements_done = replacements_done + 1
-#        file_handler.close()
-#        new_file = open(new_filename, "w+")
-#        new_file.write(file_content_after)
-#        new_file.close()
-#        file_content = file_content_after
-#    print("All replacement jobs applied successfully.")
 
 def regex_this(file_name, regex, replacement, regex_counter):
     split_filename, split_extension = file_name.split(".")
@@ -75,7 +57,7 @@ def regex_this(file_name, regex, replacement, regex_counter):
 def main():
     file_name = filename_prompt()
     regex_counter, regex = regex_prompt()
-    replacement = replacement_prompt(regex_counter, regex)
+    replacement = replacement_prompt(regex)
     regex_this(file_name, regex, replacement, regex_counter)
 
 
