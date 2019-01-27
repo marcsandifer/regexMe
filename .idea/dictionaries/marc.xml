@@ -2,6 +2,7 @@
   <dictionary name="marc">
     <words>
       <w>regexdialog</w>
+      <w>replacedialog</w>
     </words>
   </dictionary>
 </component>
