@@ -6,7 +6,7 @@ from testqt5 import Ui_MainWindow
 
 class AppWindow(QMainWindow, Ui_MainWindow):
     regex = []
-    filename = ""
+    source_filename = ""
     replacement = []
 
     def __init__(self, parent=None):
@@ -15,17 +15,27 @@ class AppWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.show()
 
-    def clicked(self):
+    def picksourcefile(self):
         sender = self.sender()
         self.statusBar().showMessage(sender.text() + ' was pressed')
-        AppWindow.filename, extension_filter = QFileDialog.getOpenFileName()
-        print(AppWindow.filename)
-        self.textLog.append("Selected File Name: " + AppWindow.filename)
+        AppWindow.source_filename, extension_filter = QFileDialog.getOpenFileName()
+        print(AppWindow.source_filename)
+        self.textLog.append("Selected Source File: " + AppWindow.source_filename)
         row_count = self.tableWidget.rowCount()
         for row in range(0, row_count):
             if self.tableWidget.item(row, 0) is not None:
                 AppWindow.regex.append(self.tableWidget.item(row, 0).text())
+            if self.tableWidget.item(row, 1) is not None:
                 AppWindow.replacement.append(self.tableWidget.item(row, 1).text())
+        print(AppWindow.regex)
+        print(AppWindow.replacement)
+
+    def pickrulefile(self):                                         # TODO: add csv -> table functionality
+        sender = self.sender()
+        self.statusBar().showMessage(sender.text() + ' was pressed')
+        AppWindow.rule_filename, extension_filter = QFileDialog.getOpenFileName()
+        print(AppWindow.rule_filename)
+        self.textLog.append("Selected Rule File: " + AppWindow.rule_filename)
         print(AppWindow.regex)
         print(AppWindow.replacement)
 
@@ -36,6 +46,10 @@ class AppWindow(QMainWindow, Ui_MainWindow):
         regex = AppWindow.regex
         replacement = AppWindow.replacement
         regex_this(filename, regex, replacement)
+
+    def cleartable(self):
+        self.tableWidget.clearContents()
+        self.textLog.append("Table cleared.")
 
 
 def regex_this(file_name, regex, replacement):
