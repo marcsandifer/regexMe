@@ -2,8 +2,6 @@ import re
 import sys
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QPushButton, QFileDialog, qApp
 from testqt5 import Ui_MainWindow
-from regex_entry import Ui_regexEntry
-from replace_entry import Ui_replaceEntry
 
 
 class AppWindow(QMainWindow, Ui_MainWindow):
@@ -16,8 +14,6 @@ class AppWindow(QMainWindow, Ui_MainWindow):
         qApp.installEventFilter(self)
         self.setupUi(self)
         self.show()
-        self.regexdialog = RegexWindow()
-        self.replacedialog = ReplaceWindow()
 
     def clicked(self):
         sender = self.sender()
@@ -25,14 +21,13 @@ class AppWindow(QMainWindow, Ui_MainWindow):
         AppWindow.filename, extension_filter = QFileDialog.getOpenFileName()
         print(AppWindow.filename)
         self.textLog.append("Selected File Name: " + AppWindow.filename)
-        self.regexdialog.exec()
-        self.textLog.append("You entered the following regular expressions:")
-        for i in self.regex:
-            self.textLog.append("> " + i)
-        self.replacedialog.exec()
-        self.textLog.append("You entered the following replacement terms:")
-        for i in range(0,len(self.regex)):
-            self.textLog.append(f"{self.regex[i]} with {self.replacement[i]}")
+        row_count = self.tableWidget.rowCount()
+        for row in range(0, row_count):
+            if self.tableWidget.item(row, 0) is not None:
+                AppWindow.regex.append(self.tableWidget.item(row, 0).text())
+                AppWindow.replacement.append(self.tableWidget.item(row, 1).text())
+        print(AppWindow.regex)
+        print(AppWindow.replacement)
 
     def replaceall(self):
         sender = self.sender()
@@ -41,42 +36,6 @@ class AppWindow(QMainWindow, Ui_MainWindow):
         regex = AppWindow.regex
         replacement = AppWindow.replacement
         regex_this(filename, regex, replacement)
-
-
-class RegexWindow(QDialog, Ui_regexEntry):
-    def __init__(self, parent=AppWindow):
-        super(RegexWindow, self).__init__()
-        self.setupUi(self)
-
-    def accept(self):
-        AppWindow.regex = self.plainTextEdit.toPlainText().split("\n")
-        print("accepted")
-        print(AppWindow.regex)
-        self.close()
-        super(RegexWindow, self).accept()   # call the accept method, as we're overwriting it
-
-    def reject(self):
-        print("declined")
-        self.close()
-        super(RegexWindow, self).reject()   # call the reject method, as we're overwriting it
-
-
-class ReplaceWindow(QDialog, Ui_replaceEntry):
-    def __init__(self, parent=AppWindow):
-        super(ReplaceWindow, self).__init__()
-        self.setupUi(self)
-
-    def accept(self):
-        AppWindow.replacement = self.plainTextEdit.toPlainText().split("\n")
-        print("accepted")
-        print(AppWindow.replacement)
-        self.close()
-        super(ReplaceWindow, self).accept()   # call the accept method, as we're overwriting it
-
-    def reject(self):
-        print("declined")
-        self.close()
-        super(ReplaceWindow, self).reject()   # call the reject method, as we're overwriting it
 
 
 def regex_this(file_name, regex, replacement):
@@ -92,7 +51,7 @@ def regex_this(file_name, regex, replacement):
                 print(f"Replaced {expression} with {replacement[replacements_done]} in line: '{line_content}'")
                 file_content_after = re.sub(regex[replacements_done], str(replacement[replacements_done]), line_content)
                 line_content = file_content_after
-                replacements_done = replacements_done + 1   # to-do: figure out how to get rid of this count variable
+                replacements_done = replacements_done + 1  # to-do: figure out how to get rid of this count variable
             new_file.write(file_content_after)
             line = file_handler.readline()
         file_handler.close()
