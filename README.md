@@ -6,15 +6,18 @@ I'm learning Python and started looking for real-world problems to solve. One su
 
 ## Features
 I'm planning to add further features as I learn the language. 
-At the moment, the script is quite simple:
-1) It asks for a filename (file must be located in the same folder)
-2) It then asks for at least one regular expression to apply.
-3) For each entered expression, it asks the user for a replacement string.
-4) It checks the file line by line (to save memory and allow for larger files) and replaces all strings matching the entered regular expressions with their respective replacement strings.
-5) After applying all replacement jobs to a line, it writes the resulting new line into a new file named {your_original_file_name}_processed.{your_extension}.
-
-## Limitations
+At the moment, the script works as follows: 
+* You can select a source file.
+    * Only plaintext files are supported at the moment. CSV support will be added shortly.
+* You can select a rule file to import your regular expressions and replacements from.
+    * Oh wait, you can't. The button is there but the script currently does nothing with the file. This will be added 
+    shortly. Instead:
+* You can enter your regular expressions and replacement terms directly into the table.
+    * Up to 50 pairs are supported right now.
+* There is very basic input validation. 
+    
+## Limitations 
 - It can currently only read and write plain text files. I'm planning to add CSV support in the very near future.
 - You will, without a doubt, be able to break this. If you're actually planning on using this on files you care about, make backups of those files. 
 
-###### Last changed: 23:26 CET - Jan 21, 2018
+###### Last changed: 22:55 CET - Jan 29, 2018
