@@ -5,9 +5,9 @@ from regexMeGUI import Ui_MainWindow
 
 
 class AppWindow(QMainWindow, Ui_MainWindow):
-    regex = []
-    source_filename = ""
-    replacement = []
+    regex = []                              # array to store regular expressions
+    source_filename = ""                    # name of source file
+    replacement = []                        # array to store replacement terms
 
     def __init__(self, parent=None):
         super(AppWindow, self).__init__(parent)
@@ -18,31 +18,30 @@ class AppWindow(QMainWindow, Ui_MainWindow):
     def picksourcefile(self):
         sender = self.sender()
         self.statusBar().showMessage(sender.text() + ' was pressed')
-        AppWindow.source_filename, extension_filter = QFileDialog.getOpenFileName()
+        AppWindow.source_filename, extension_filter = QFileDialog.getOpenFileName()     # sets source file name
         print(AppWindow.source_filename)
         self.textLog.append("Selected Source File: " + AppWindow.source_filename)
-        row_count = self.tableWidget.rowCount()
-        for row in range(0, row_count):
-            if self.tableWidget.item(row, 0) is not None:
-                AppWindow.regex.append(self.tableWidget.item(row, 0).text())
-            if self.tableWidget.item(row, 1) is not None:
-                AppWindow.replacement.append(self.tableWidget.item(row, 1).text())
-        print(AppWindow.regex)
-        print(AppWindow.replacement)
 
     def pickrulefile(self):                                         # TODO: add csv -> table functionality
-        sender = self.sender()
-        self.statusBar().showMessage(sender.text() + ' was pressed')
+        self.statusBar().showMessage(self.sender().text() + ' was pressed')
         AppWindow.rule_filename, extension_filter = QFileDialog.getOpenFileName()
         print(AppWindow.rule_filename)
         self.textLog.append("Selected Rule File: " + AppWindow.rule_filename)
         print(AppWindow.regex)
         print(AppWindow.replacement)
 
+
     def replaceall(self):
-        sender = self.sender()
-        self.statusBar().showMessage(sender.text() + ' was pressed')
-        filename = AppWindow.filename
+        self.statusBar().showMessage(self.sender().text() + ' was pressed')
+        row_count = self.tableWidget.rowCount()                                         # checks how many rows there are
+        for row in range(0, row_count):                                                 # for every row, checks:
+            if self.tableWidget.item(row, 0) is not None:                               # if cell in column A != empty:
+                AppWindow.regex.append(self.tableWidget.item(row, 0).text())            # add the content to regex[]
+            if self.tableWidget.item(row, 1) is not None:                               # if cell in column B != empty:
+                AppWindow.replacement.append(self.tableWidget.item(row, 1).text())      # add the content to repl.[]
+        print(AppWindow.regex)
+        print(AppWindow.replacement)
+        filename = AppWindow.source_filename
         regex = AppWindow.regex
         replacement = AppWindow.replacement
         regex_this(filename, regex, replacement)
@@ -64,7 +63,7 @@ def regex_this(file_name, regex, replacement):
             for expression in regex:
                 print(f"Replaced {expression} with {replacement[replacements_done]} in line: '{line_content}'")
                 file_content_after = re.sub(regex[replacements_done], str(replacement[replacements_done]), line_content)
-                line_content = file_content_after
+                line_content = file_content_after           # not-to-do: load the entire file into one variable.
                 replacements_done = replacements_done + 1  # to-do: figure out how to get rid of this count variable
             new_file.write(file_content_after)
             line = file_handler.readline()
