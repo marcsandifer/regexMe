@@ -1,6 +1,6 @@
 import re
 import sys
-from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QPushButton, QFileDialog, qApp
+from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QPushButton, QFileDialog, qApp, QErrorMessage
 from regexMeGUI import Ui_MainWindow
 
 
@@ -30,20 +30,30 @@ class AppWindow(QMainWindow, Ui_MainWindow):
         print(AppWindow.regex)
         print(AppWindow.replacement)
 
-
     def replaceall(self):
         self.statusBar().showMessage(self.sender().text() + ' was pressed')
         row_count = self.tableWidget.rowCount()                                         # checks how many rows there are
-        for row in range(0, row_count):                                                 # for every row, checks:
-            if self.tableWidget.item(row, 0) is not None:                               # if cell in column A != empty:
-                AppWindow.regex.append(self.tableWidget.item(row, 0).text())            # add the content to regex[]
-            if self.tableWidget.item(row, 1) is not None:                               # if cell in column B != empty:
-                AppWindow.replacement.append(self.tableWidget.item(row, 1).text())      # add the content to repl.[]
-        print(AppWindow.regex)
+        for row in range(0, row_count):                                                 # for every row, checks first
+                                                                                        # two columns:
+            if self.tableWidget.item(row, 0) not in [None, ""]:                         # Is it empty or has never been
+                                                                                        # touched? Then add it to the
+                AppWindow.regex.append(self.tableWidget.item(row, 0).text())            # matching array. Else don't.
+            if self.tableWidget.item(row, 1) not in [None, ""]:                         # ("") is important to include
+                AppWindow.replacement.append(self.tableWidget.item(row, 1).text())      # because previously filled
+        print(AppWindow.regex)                                                          # cells are "", not None
         print(AppWindow.replacement)
         filename = AppWindow.source_filename
         regex = AppWindow.regex
         replacement = AppWindow.replacement
+        if filename == "":
+            self.textLog.append("No source file selected. Please select a source file.")
+            return
+        if not regex:
+            self.textLog.append("No regular expressions found. Please enter at least one regular expression")
+            return
+        if not replacement:
+            self.textLog.append("No replacements found.")
+            return
         regex_this(filename, regex, replacement)
 
     def cleartable(self):
