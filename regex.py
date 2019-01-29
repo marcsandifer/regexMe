@@ -1,7 +1,7 @@
 import re
 import sys
 from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QPushButton, QFileDialog, qApp
-from testqt5 import Ui_MainWindow
+from regexMeGUI import Ui_MainWindow
 
 
 class AppWindow(QMainWindow, Ui_MainWindow):
