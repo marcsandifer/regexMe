@@ -1,13 +1,15 @@
 import re
 import sys
-from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow, QPushButton, QFileDialog, qApp, QErrorMessage
+from PyQt5.QtWidgets import QTableWidgetItem, QApplication, QMainWindow, QPushButton, QFileDialog, qApp, QErrorMessage
 from regexMeGUI import Ui_MainWindow
+import csv
 
 
 class AppWindow(QMainWindow, Ui_MainWindow):
-    regex = []                              # array to store regular expressions
-    source_filename = ""                    # name of source file
-    replacement = []                        # array to store replacement terms
+    regex = []                                  # array to store regular expressions
+    source_filename = ""                        # name of source file
+    replacement = []                            # array to store replacement terms
+    rule_filename = ""
 
     def __init__(self, parent=None):
         super(AppWindow, self).__init__(parent)
@@ -29,6 +31,24 @@ class AppWindow(QMainWindow, Ui_MainWindow):
         self.textLog.append("Selected Rule File: " + AppWindow.rule_filename)
         print(AppWindow.regex)
         print(AppWindow.replacement)
+        self.readrulefile()
+
+    def readrulefile(self):
+        self.textLog.append("Opening rule file...")
+        # dialect = csv.get_dialect(AppWindow.rule_filename)
+        # self.textLog.append(f"File dialect is: {dialect}")
+        csv.reader(AppWindow.rule_filename)
+
+        with open(AppWindow.rule_filename, newline='\n') as rulecsv:
+            row_count = 0
+            rulecsv_content = list(csv.reader(rulecsv, delimiter=';'))
+            self.tableWidget.setRowCount(sum(1 for row in rulecsv_content))
+            print(rulecsv_content)
+            for row in rulecsv_content:
+                print(row_count)
+                self.tableWidget.setItem(row_count, 0, QTableWidgetItem(row[0]))
+                self.tableWidget.setItem(row_count, 1, QTableWidgetItem(row[1]))
+                row_count = row_count + 1
 
     def replaceall(self):
         self.statusBar().showMessage(self.sender().text() + ' was pressed')
